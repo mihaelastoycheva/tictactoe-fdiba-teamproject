@@ -15,7 +15,7 @@ h1 {
 }
 
 h2 {
-  margin-top: 0;
+  margin-top: 5;
   font-size: 20px;
 }
 
@@ -90,4 +90,20 @@ ul {
 select {
   font-size: 16px;
   padding: 5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
 }
