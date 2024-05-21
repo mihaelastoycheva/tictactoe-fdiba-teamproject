@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.2">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">name: Backend Build and Test</p>
+<p class="p2"><br></p>
+<p class="p1">on:</p>
+<p class="p1"><span class="Apple-converted-space">  </span>push:</p>
+<p class="p1"><span class="Apple-converted-space">    </span>branches:</p>
+<p class="p1"><span class="Apple-converted-space">      </span>- main</p>
+<p class="p1"><span class="Apple-converted-space">  </span>pull_request:</p>
+<p class="p1"><span class="Apple-converted-space">    </span>branches:</p>
+<p class="p1"><span class="Apple-converted-space">      </span>- main</p>
+<p class="p2"><br></p>
+<p class="p1">jobs:</p>
+<p class="p1"><span class="Apple-converted-space">  </span>build:</p>
+<p class="p1"><span class="Apple-converted-space">    </span>runs-on: ubuntu-latest</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>steps:</p>
+<p class="p1"><span class="Apple-converted-space">    </span>- name: Checkout code</p>
+<p class="p1"><span class="Apple-converted-space">      </span>uses: actions/checkout@v2</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>- name: Set up Node.js</p>
+<p class="p1"><span class="Apple-converted-space">      </span>uses: actions/setup-node@v2</p>
+<p class="p1"><span class="Apple-converted-space">      </span>with:</p>
+<p class="p1"><span class="Apple-converted-space">        </span>node-version: '14'</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>- name: Install dependencies</p>
+<p class="p1"><span class="Apple-converted-space">      </span>run: npm install</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>- name: Run backend tests</p>
+<p class="p1"><span class="Apple-converted-space">      </span>run: npm test</p>
+</body>
+</html>
