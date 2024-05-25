@@ -1,92 +1,144 @@
 package com.example.demo.game;
 
-import com.fasterxml.jackson.databind.util.JSONWrappedObject;
-import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
+import java.util.Arrays;
 
-@Entity
-@Table
 public class Game {
-    @Id
-    @SequenceGenerator(
-            name = "game_sequence",
-            sequenceName = "game_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "game_sequence"
-    )
-    private int id;
-    private int player1ID;
-    private int player2ID;
-    private int winnerID;
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
+    public enum GameState {
+        ONGOING,
+        TIE,
+        PLAYER1_WON,
+        PLAYER2_WON
+    }
+
+    private Integer id;
+    private Integer player1Id;
+    private Integer player2Id;
+    private boolean player1Symbol; // X = true, O = false
     private Timestamp startTime;
-    //@JdbcTypeCode(SqlTypes.JSON)
-    //private JSONObject moves;
-    private HashMap<Integer, Character> moves;
+
+    private GameState gameState;
+
+    private Integer[] board; // X = 1, O = 0
 
     public Game() {
         super();
     }
 
-    public Game(int id) {
-        this.id = id;
-    }
-
-    public Game(int id, int player1ID, int player2ID) throws JSONException {
-        this.id = id;
-        this.player1ID = player1ID;
-        this.player2ID = player2ID;
+    public Game(Integer player1Id, boolean symbol) {
+        this.player1Id = player1Id;
+        this.gameState = GameState.ONGOING;
         this.startTime = new Timestamp(System.currentTimeMillis());
-        this.moves = new HashMap<Integer, Character>();
-        for(int i = 1; i <= 9; i++) {
-            this.moves.put(i, null);
+        this.player1Symbol = symbol;
+        this.board = new Integer[9];
+        for(int i = 0; i <= 8; i++) {
+            board[i] = null;
         }
     }
 
-    public Game(int player1ID, int player2ID) throws JSONException {
-        this.player1ID = player1ID;
-        this.player2ID = player2ID;
-        this.startTime = new Timestamp(System.currentTimeMillis());
-        this.moves = new HashMap<Integer, Character>();
-        for(int i = 1; i <= 9; i++) {
-            this.moves.put(i, null);
+    public void makeMove(Integer playerId, Integer position) {
+        if (board[position - 1] != null) {
+            throw new IllegalStateException("This move is already played!");
+        }
+
+        if (playerId.equals(player1Id)) {
+            board[position - 1] = player1Symbol ? 1 : 0;
+        } else if (playerId.equals(player2Id)) {
+            board[position - 1] = player1Symbol ? 0 : 1;
+        } else {
+            throw new IllegalArgumentException("This player is not part of this game!");
+        }
+        isGameFinished();
+    }
+
+    public void isGameFinished() {
+        Integer[][] winCombinations = {
+                {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, // Rows
+                {1, 4, 7}, {2, 5, 8}, {3, 6, 9}, // Columns
+                {1, 5, 9}, {3, 5, 7}             // Diagonals
+        };
+
+        for (Integer[] combination : winCombinations) {
+            Integer first = combination[0];
+            Integer symbol = board[first - 1];
+            if (symbol == null) continue; // Skip combination if the first cell is empty
+            if (symbol == board[combination[1] - 1] && symbol == board[combination[2] - 1]) {
+                if (player1Symbol) {
+                    if (symbol == 1) {
+                        gameState = GameState.PLAYER1_WON;
+                    } else {
+                        gameState = GameState.PLAYER2_WON;
+                    }
+                } else {
+                    if (symbol == 0) {
+                        gameState = GameState.PLAYER1_WON;
+                    } else {
+                        gameState = GameState.PLAYER2_WON;
+                    }
+                }
+                return;
+            }
+        }
+        if (isBoardFull()) {
+            gameState = GameState.TIE;
         }
     }
 
-    public void makeMove() {
+    public boolean isBoardEmpty() {
+        for (int i = 1; i <= 9; i++) {
+            if(board[i] != null) {
+                return false;
+            }
+        }
+        return true;
+    }
 
+    public boolean isBoardFull() {
+        for (int i = 1; i <= 9; i++) {
+            if(board[i] == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setPlayer1ID(int player1ID) {
-        this.player1ID = player1ID;
+    public void setPlayer1Id(int player1Id) {
+        this.player1Id = player1Id;
     }
 
-    public void setPlayer2ID(int player2ID) {
-        this.player2ID = player2ID;
-    }
-
-    public void setWinnerID(int winnerID) {
-        this.winnerID = winnerID;
+    public void setPlayer2Id(int player2Id) {
+        this.player2Id = player2Id;
     }
 
     public void setStartTime(Timestamp startTime) {
         this.startTime = startTime;
     }
 
-    public void setMoves(HashMap<Integer, Character> moves) {
-        this.moves = moves;
+    public void setBoardString(String board) {
+        this.board = new Integer[9];
+        int boardIndex = 0;
+        for (int i = 0; i < board.length(); i++) {
+            if (board.charAt(i) == '0' || board.charAt(i) == '1') {
+                this.board[boardIndex] = board.charAt(i) - '0';
+            } else if (board.charAt(i) == ',') {
+                boardIndex++;
+            }
+        }
     }
 
 
@@ -94,36 +146,59 @@ public class Game {
         return id;
     }
 
-    public int getPlayer1ID() {
-        return player1ID;
+    public Integer getPlayer1Id() {
+        return player1Id;
     }
 
-    public int getPlayer2ID() {
-        return player2ID;
-    }
-
-    public int getWinnerID() {
-        return winnerID;
+    public Integer getPlayer2Id() {
+        return player2Id;
     }
 
     public Timestamp getStartTime() {
         return startTime;
     }
 
-    public HashMap<Integer, Character> getMoves() {
-        return moves;
+
+    @JsonIgnore
+    public String getBoardString() {
+       StringBuilder stringBuilder = new StringBuilder();
+       for (int i = 0; i <= 8; i++) {
+           if (board[i] != null) {
+               stringBuilder.append(board[i]).append(",");
+           } else {
+               stringBuilder.append(",");
+           }
+       }
+       stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+       return stringBuilder.toString();
     }
 
     @Override
     public String toString() {
         return "Game{" +
-                "id= " + id +
-                ", player1ID= " + player1ID +
-                ", player2ID= " + player2ID +
-                ", winnerID= " + winnerID +
-                ", startTime= " + startTime +
-                ", moves= " + moves +
+                "id=" + id +
+                ", player1Id=" + player1Id +
+                ", player2Id=" + player2Id +
+                ", player1Symbol=" + player1Symbol +
+                ", startTime=" + startTime +
+                ", board=" + Arrays.toString(board) +
                 '}';
+    }
+
+    public boolean getPlayer1Symbol() {
+        return player1Symbol;
+    }
+
+    public void setPlayer1Symbol(boolean player1Symbol) {
+        this.player1Symbol = player1Symbol;
+    }
+
+    public Integer[] getBoard() {
+        return board;
+    }
+
+    public void setBoard(Integer[] board) {
+        this.board = board;
     }
 }
 
