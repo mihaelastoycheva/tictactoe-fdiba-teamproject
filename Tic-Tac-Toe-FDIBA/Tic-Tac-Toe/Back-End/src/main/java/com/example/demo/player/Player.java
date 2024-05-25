@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Player {
     private int id;
     private String name;
-    private String passwordHash;
+    private String password;
     private int gamesPlayed;
     private int gamesWon;
 
@@ -60,13 +60,13 @@ public class Player {
     }
 
     @JsonIgnore
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
     @JsonProperty
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setGamesPlayed(int gamesPlayed) {

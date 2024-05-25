@@ -16,7 +16,7 @@ public class PlayerController {
         this.playerService = playerService;
     }
 
-    @GetMapping
+    @GetMapping("/ranking")
     public List<Player> getPlayers() {
         return playerService.getPlayers();
     }
@@ -26,7 +26,7 @@ public class PlayerController {
         return playerService.getPlayer(playerId);
     }
 
-    @PostMapping
+    @PostMapping(path = "/register")
     public void registerNewPlayer(@RequestBody Player player) {
         playerService.addNewPlayer(player);
     }
