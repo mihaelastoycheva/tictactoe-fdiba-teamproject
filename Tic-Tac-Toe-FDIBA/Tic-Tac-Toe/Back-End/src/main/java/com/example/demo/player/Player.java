@@ -1,24 +1,16 @@
 package com.example.demo.player;
 
-import jakarta.persistence.*;
 
-@Entity
-@Table
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Player {
-    @Id
-    @SequenceGenerator(
-            name = "player_sequence",
-            sequenceName = "player_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "player_sequence"
-    )
     private int id;
     private String name;
+    private String passwordHash;
     private int gamesPlayed;
     private int gamesWon;
+
 
     public Player() {
 
@@ -65,5 +57,23 @@ public class Player {
                 ", gamesPlayed=" + gamesPlayed +
                 ", gamesWon=" + gamesWon +
                 '}';
+    }
+
+    @JsonIgnore
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    @JsonProperty
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public void setGamesPlayed(int gamesPlayed) {
+        this.gamesPlayed = gamesPlayed;
+    }
+
+    public void setGamesWon(int gamesWon) {
+        this.gamesWon = gamesWon;
     }
 }

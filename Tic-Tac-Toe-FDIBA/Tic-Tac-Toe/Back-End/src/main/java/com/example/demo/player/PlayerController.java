@@ -21,17 +21,22 @@ public class PlayerController {
         return playerService.getPlayers();
     }
 
+    @GetMapping("/{playerId}")
+    public Player getPlayer(@PathVariable Integer playerId) {
+        return playerService.getPlayer(playerId);
+    }
+
     @PostMapping
     public void registerNewPlayer(@RequestBody Player player) {
         playerService.addNewPlayer(player);
     }
 
-    @DeleteMapping(path = "{playerId}")
+    @DeleteMapping(path = "/{playerId}")
     public void deletePlayer(@PathVariable("playerId") Integer playerId) {
         playerService.deletePlayer(playerId);
     }
 
-    @PutMapping(path = "{playerId}")
+    @PutMapping(path = "/{playerId}")
     public void updatePlayer(
             @PathVariable("playerId") Integer playerId,
             @RequestParam(required = false) String name) {

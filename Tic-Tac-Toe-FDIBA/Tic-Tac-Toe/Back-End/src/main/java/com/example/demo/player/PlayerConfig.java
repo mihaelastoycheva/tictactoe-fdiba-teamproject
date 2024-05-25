@@ -20,7 +20,6 @@ public class PlayerConfig {
                     "Gosho"
             );
 
-            repository.saveAll(List.of(pesho, gosho));
         };
     }
 }

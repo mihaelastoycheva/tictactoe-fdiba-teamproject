@@ -1,16 +1,37 @@
 package com.example.demo.repository;
 
 import com.example.demo.player.Player;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
-import java.util.Optional;
+import java.util.List;
 
-@Repository
-public interface PlayerRepository extends JpaRepository<Player, Integer> {
+@Mapper
+public interface PlayerRepository {
 
-    //same as SELECT * FROM student WHERE name = ?
-    //@Query("SELECT p FROM Player p WHERE p.name = ?1")  // same as that below
-    Optional<Player> findPlayerByName(String name);
+    @Select("SELECT * FROM player WHERE id = #{player1Id}")
+    Player getPlayerById(Integer player1Id);
+
+    @Insert("INSERT INTO player (\"name\", password_hash) VALUES (#{name}, #{passwordHash})")
+    void insertPlayer(Player player);
+
+    @Update("UPDATE player SET gamesPlayed = gamesPlayed + 1 WHERE id = #{playerId}")
+    void incrementGamesPlayed(Integer playerId);
+
+    @Update("UPDATE player SET gamesWon = gamesWon + 1 WHERE id = #{playerId}")
+    void incrementGamesWon(Integer playerId);
+
+    @Select("SELECT * FROM player WHERE \"name\" = #{name}")
+    Player findPlayerByName(String name);
+
+    @Select("DELETE FROM player WHERE `id` = #{playerId}")
+    void deleteById(Integer playerId);
+
+    @Update("UPDATE player SET \"name\" = #{name} WHERE id = #{playerId}")
+    void updatePlayerName(String name, Integer playerId);
+
+    @Select("SELECT * FROM player")
+    List<Player> getAll();
 }
