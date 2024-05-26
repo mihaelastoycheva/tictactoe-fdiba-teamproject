@@ -22,12 +22,15 @@ public class PlayerService {
         return playerRepository.getAll();
     }
 
+    public List<PlayerRank> getRanking() {
+        return playerRepository.getRanking();
+    }
+
     public void addNewPlayer(Player player) {
         Player existingPlayer = playerRepository.findPlayerByName(player.getName());
         if (existingPlayer != null) {
             throw new IllegalStateException("Name is taken! Choose a different one!");
         }
-
         playerRepository.insertPlayer(player);
     }
 
@@ -36,7 +39,7 @@ public class PlayerService {
         if(player == null) {
             throw new IllegalStateException("Player with id " + playerId + " does not exist!");
         }
-         playerRepository.deleteById(playerId);
+        playerRepository.deleteById(playerId);
     }
 
     public void updatePlayer(Integer playerId, String name) {

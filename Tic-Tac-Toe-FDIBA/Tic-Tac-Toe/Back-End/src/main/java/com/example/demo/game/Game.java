@@ -36,8 +36,9 @@ public class Game {
         super();
     }
 
-    public Game(Integer player1Id, boolean symbol) {
+    public Game(Integer player1Id, Integer player2Id, boolean symbol) {
         this.player1Id = player1Id;
+        this.player2Id = player2Id;
         this.gameState = GameState.ONGOING;
         this.startTime = new Timestamp(System.currentTimeMillis());
         this.player1Symbol = symbol;

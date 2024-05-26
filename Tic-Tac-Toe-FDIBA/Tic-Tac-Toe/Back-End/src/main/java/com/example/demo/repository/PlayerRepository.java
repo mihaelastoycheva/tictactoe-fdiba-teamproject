@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.player.Player;
+import com.example.demo.player.PlayerRank;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -34,4 +35,7 @@ public interface PlayerRepository {
 
     @Select("SELECT * FROM player")
     List<Player> getAll();
+
+    @Select("SELECT name, gamesWon FROM player ORDER BY gamesWon DESC")
+    List<PlayerRank> getRanking();
 }

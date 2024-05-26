@@ -16,9 +16,14 @@ public class PlayerController {
         this.playerService = playerService;
     }
 
-    @GetMapping("/ranking")
+    @GetMapping
     public List<Player> getPlayers() {
         return playerService.getPlayers();
+    }
+
+    @GetMapping("/ranking")
+    public List<PlayerRank> getRanking() {
+        return playerService.getRanking();
     }
 
     @GetMapping("/{playerId}")

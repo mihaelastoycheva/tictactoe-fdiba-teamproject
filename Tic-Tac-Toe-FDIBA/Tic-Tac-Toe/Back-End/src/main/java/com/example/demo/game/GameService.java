@@ -30,9 +30,11 @@ public class GameService {
 
         if (playerRepository.getPlayerById(body.getPlayer1Id()) == null) {
             throw new IllegalArgumentException("This player does not exist!");
+        } else if (playerRepository.getPlayerById(body.getPlayer2Id()) == null) {
+            throw new IllegalArgumentException("This player does not exist!");
         }
 
-        Game game = new Game(body.getPlayer1Id(), body.getSymbol());
+        Game game = new Game(body.getPlayer1Id(), body.getPlayer2Id(), body.getSymbol());
         gameRepository.insertGame(game);
 
         return game.getId();
