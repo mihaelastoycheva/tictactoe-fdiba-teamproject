@@ -1,11 +1,13 @@
 import React from 'react'
 import Axios from 'axios';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Dashboard } from './Dashboard';
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 
 export function Home() {
+    const { state } = useLocation();
+
     const [usernameFirst, setUsernameFirst] = useState('')
     const [passwordFirst, setPasswordFirst] = useState('')
 
@@ -28,10 +30,11 @@ export function Home() {
 
     const onSignInButtonClick = async() => {
         const errorCodes = await signInRequest();
-        
-        if(typeof errorCodes === 'undefined'){
+        console.log(errorCodes)
+
+        if(errorCodes.length === 0){
             setSignInErrorMsg('Ok :)');
-            navigate('/symbol');
+            navigate('/symbol', {state: {usernameFirst, usernameSec}});
             return
         }
 

@@ -145,6 +145,15 @@ th {
   gap: 10px;
 }
 
+.success-text{
+  color:green;
+  line-height: 1.5;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  gap: 10px;
+}
+
 button {
   padding: 10px 20px;
   font-size: 16px;
@@ -160,6 +169,11 @@ button {
   font-size: 25px;
   border-radius: 8px;
   cursor: pointer;
+}
+
+.button-symbol.clicked{
+  background-color: black;
+  color: white;
 }
 
 .signInButton {

@@ -1,16 +1,24 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import { useEffect } from "react";
+import Axios from 'axios';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Square } from './Square';
 import { Dashboard } from './Dashboard';
 import { Container, Row, Col } from 'react-bootstrap';
 
 export function Board() {
-    const [xIsNext, setXIsNext] = useState(true);
-    const [squares, setSquares] = useState(Array(9).fill(null));
-    //const [playerSymbol, setPlayerSymbol] = useState('X');
-
     const navigate = useNavigate();
+    const { state } = useLocation();
+
+    const symbolFirst = state.symbolFirst;
+    const usernameFirst = state.usernameFirst;
+    const usernameSec = state.usernameSec;
+    const symbolSec = state.symbolSec;
+
+    const [xIsNext, setXIsNext] = useState(symbolFirst);
+    const [squares, setSquares] = useState(Array(9).fill(null));
+    const [data, setData] = useState(null);
+    const [winnerData, setWinnerData] = useState(null);
 
     function handleClick(i) {
         if (calculateWinner(squares) || squares[i]) {
@@ -19,32 +27,59 @@ export function Board() {
 
         const nextSquares = squares.slice();
 
-        if (xIsNext) {
+        if (xIsNext === 'X') {
             nextSquares[i] = 'X';
+            setXIsNext('O');
         } else {
             nextSquares[i] = 'O';
+            setXIsNext('X');
         }
 
         setSquares(nextSquares);
-        setXIsNext(!xIsNext);
     }
 
 
     const winner = calculateWinner(squares);
     let status;
+    let winnerCode;
     if (!squares.includes(null)) {
         status = 'Draw!';
     } else {
         if (winner) {
-            status = 'Winner: ' + winner;
+            let winnerUsername;
+            if (winner === symbolFirst) {
+                winnerUsername = state.usernameFirst;
+                winnerCode = 1;
+            } else {
+                winnerUsername = state.usernameSec;
+                winnerCode = 2;
+            }
+            status = 'Winner: ' + winner + " " + winnerUsername;
+
+            if (!winnerData) {
+                setWinnerData({ usernameFirst, usernameSec, winnerCode })
+            }
+
         } else {
-            status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+            status = 'Next player: ' + xIsNext;
         }
     }
 
+    useEffect(() => {
+        if (winnerData) {
+            Axios.post('http://localhost:5001/game', winnerData)
+                .then(res => {
+                    console.log("Saved data", res.data)
+                    setData(res.data)
+                }).catch(err => console.log(err))
+        }
+    }, [winnerData]);
+
+
     const resetGame = () => {
         setSquares(Array(9).fill(null));
-        setXIsNext(true);
+        setXIsNext(symbolFirst);
+        navigate('/game', {state: {usernameFirst, usernameSec, symbolFirst, symbolSec}});
     };
 
     const onExitButtonClick = () => {
@@ -60,6 +95,11 @@ export function Board() {
                             <div>Tic-Tac-Toe</div>
                         </div>
 
+                        <div className='button-container-symbol'> {state.usernameFirst}'s symbol: {state.symbolFirst}</div>
+                        <div className='button-container-symbol'> {state.usernameSec}'s symbol: {state.symbolSec}</div>
+
+
+                        <br></br>
                         <div className="status">{status}</div>
                         <div className="board-row">
                             <Square value={squares[0]} onSquareClick={() => handleClick(0)} />

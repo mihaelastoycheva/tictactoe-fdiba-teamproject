@@ -1,9 +1,12 @@
 import React from 'react'
 import Axios from 'axios';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export function Register() {
+    const navigate = useNavigate();
+    const { state } = useLocation();
+
     const [username, setUsername] = useState('')
     const [usernameError, setUsernameError] = useState('')
 
@@ -18,8 +21,6 @@ export function Register() {
 
     const [registerErrorCodes, setRegisterErrorCodes] = useState([])
     const [registerErrorMsg, setRegisterErrorMsg] = useState('')
-
-    const navigate = useNavigate();
 
     const registerRequest = async () => {
         try {
@@ -79,13 +80,14 @@ export function Register() {
 
         const errorCodes = await registerRequest();
 
-        if(typeof errorCodes === 'undefined'){
+        if(errorCodes.length === 0){
             setRegisterErrorMsg('Ok :)');
             navigate('/');
             return
         }
 
         if(errorCodes.length > 0){
+            console.log(errorCodes)
             setRegisterErrorMsg('Error occured :(')
             return
         }

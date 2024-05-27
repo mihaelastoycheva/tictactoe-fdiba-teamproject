@@ -131,3 +131,35 @@ app.post('/signin', async (req, res) => {
 	};
 	return res.status(200).json(responseObject);
 });
+
+app.post('/game', async (req, res) => {
+	var username1 = req.body.usernameFirst;
+	var username2 = req.body.usernameFirst;
+	var winnerCode = req.body.winnerCode;
+
+	if(winnerCode === 1){
+		await pool.query('UPDATE players SET wins = wins + 1 WHERE username = $1', [username1], (error, results) => {
+			if (error) {
+				throw error
+			}
+	
+			const responseObject = {
+				success: true,
+			};
+			res.status(200).json(responseObject)
+		})
+	} else if (winnerCode === 2){
+		await pool.query('UPDATE players SET wins = wins + 1 WHERE username = $1', [username2], (error, results) => {
+			if (error) {
+				throw error
+			}
+	
+			const responseObject = {
+				success: true,
+			};
+			res.status(200).json(responseObject)
+		})
+	}
+
+	
+});
