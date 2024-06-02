@@ -6,6 +6,7 @@ body {
   font-family: sans-serif;
   margin: 20px;
   padding: 0;
+  
 }
 
 h1 {
@@ -14,7 +15,7 @@ h1 {
 }
 
 h2 {
-  margin-top: 0;
+  margin-top: 5;
   font-size: 20px;
 }
 
@@ -48,12 +49,8 @@ ul {
 
 * {
   box-sizing: border-box;
-}
-
-body {
-  font-family: sans-serif;
-  margin: 20px;
-  padding: 0;
+  align-items: center;
+  justify-content: center;
 }
 
 .square {
@@ -69,6 +66,7 @@ body {
   padding: 0;
   text-align: center;
   width: 34px;
+  
 }
 
 .board-row:after {
@@ -87,4 +85,25 @@ body {
 
 .game-info {
   margin-left: 20px;
+}
+
+select {
+  font-size: 16px;
+  padding: 5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
 }
